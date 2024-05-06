@@ -18,19 +18,15 @@ from PIL import Image
 
 
 def prepare_image(image_path):
-    # Load the image
     with Image.open(image_path) as image:
-        # Convert to numpy array and normalize
         image_np = np.array(image.resize((128, 128))).astype("float32")
-    image_np /= 255.0  # Normalize to
-    # Add a batch dimension
-    image_np = np.expand_dims(image_np, axis=0)
+    image_np /= 255.0  # Normalize
+    image_np = np.expand_dims(image_np, axis=0)  # Add a batch dimension
     return image_np
 
 
 if __name__ == "__main__":
 
-    # Load the image
     cat_image_path = "images/cat.jpg"
     dog_image_path = "images/dog.jpg"
 
@@ -38,21 +34,17 @@ if __name__ == "__main__":
 
     images = [prepare_image(path) for path in paths]
 
-    # Create an inference session
     session = ort.InferenceSession("models/model.onnx")
 
-    # Get the name of the input node
+    # Name of the input node
     input_name = session.get_inputs()[0].name
 
-    # Define class labels
     classes = ["cat", "dog"]
 
-    # Run inference on each image
     for i, image_np in enumerate(images, 1):
         # Perform inference
         result = session.run(None, {input_name: image_np})
 
-        # Get the predicted class index
         predicted_class_index = np.argmax(result[0])
         print(
             f"Image {i} {paths[i-1]} predicted class: "

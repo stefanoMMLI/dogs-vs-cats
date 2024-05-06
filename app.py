@@ -25,8 +25,7 @@ uploaded_file = st.file_uploader("Choose a file")
 def prepare_pil_image(image):
     image_np = np.array(image.resize((128, 128))).astype("float32")
     image_np /= 255.0  # Normalize
-    # Add a batch dimension
-    image_np = np.expand_dims(image_np, axis=0)
+    image_np = np.expand_dims(image_np, axis=0)  # Add a batch dimension
     return image_np
 
 
